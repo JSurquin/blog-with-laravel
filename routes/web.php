@@ -7,6 +7,9 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\CommentController;
 use App\Models\Post;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
+
 Route::get('/', function () {
     $posts = Post::all();
     return view('welcome', ['posts' => $posts]);
@@ -15,6 +18,15 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified', CheckUserRole::class . ':admin'])->name('dashboard');
+
+// Language switcher route
+Route::get('/language/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fr', 'de'])) {
+        Session::put('locale', $locale);
+        App::setLocale($locale);
+    }
+    return redirect()->back();
+})->name('language.switch');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

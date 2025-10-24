@@ -22,23 +22,77 @@
             <!-- Navigation Links Desktop -->
             <div class="hidden items-center space-x-1 md:flex">
                 <a href="/" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400 {{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50' : '' }}">
-                    Accueil
+                    {{ __('Home') }}
                 </a>
                 @if(auth()->check() && auth()->user()->hasRole('admin'))
                     <a href="{{ route('dashboard') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400 {{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50' : '' }}">
-                        Dashboard
+                        {{ __('Dashboard') }}
                     </a>
                 @endif
                 <a href="{{ route('posts.index') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400 {{ request()->routeIs('posts.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50' : '' }}">
-                    Articles
+                    {{ __('Articles') }}
                 </a>
                 <a href="{{ route('subscriptions.index') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400 {{ request()->routeIs('subscriptions.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50' : '' }}">
-                    Abonnements
+                    {{ __('Subscriptions') }}
                 </a>
             </div>
 
             <!-- Right Side - User Menu -->
             <div class="hidden items-center space-x-3 md:flex">
+                <!-- Language Switcher -->
+                <div x-data="{ openLang: false }" class="relative">
+                    <button @click="openLang = !openLang" @click.away="openLang = false" class="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:border-indigo-600 hover:text-indigo-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-indigo-400 dark:hover:text-indigo-400">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                        </svg>
+                        <span class="uppercase">{{ app()->getLocale() }}</span>
+                        <svg class="h-4 w-4" :class="{'rotate-180': openLang}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div x-show="openLang" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+                         style="display: none;">
+                        <div class="py-2">
+                            <a href="{{ route('language.switch', 'fr') }}" class="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-400 {{ app()->getLocale() == 'fr' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : '' }}">
+                                <span class="text-2xl">🇫🇷</span>
+                                <span>Français</span>
+                                @if(app()->getLocale() == 'fr')
+                                    <svg class="ml-auto h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                @endif
+                            </a>
+                            <a href="{{ route('language.switch', 'en') }}" class="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-400 {{ app()->getLocale() == 'en' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : '' }}">
+                                <span class="text-2xl">🇬🇧</span>
+                                <span>English</span>
+                                @if(app()->getLocale() == 'en')
+                                    <svg class="ml-auto h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                @endif
+                            </a>
+                            <a href="{{ route('language.switch', 'de') }}" class="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-400 {{ app()->getLocale() == 'de' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : '' }}">
+                                <span class="text-2xl">🇩🇪</span>
+                                <span>Deutsch</span>
+                                @if(app()->getLocale() == 'de')
+                                    <svg class="ml-auto h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                @endif
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 @auth
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
@@ -98,19 +152,38 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-gray-200 dark:border-gray-800 md:hidden">
         <div class="space-y-1 px-4 pb-3 pt-2">
             <a href="/" class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400">
-                Accueil
+                {{ __('Home') }}
             </a>
             @if(auth()->check() && auth()->user()->hasRole('admin'))
                 <a href="{{ route('dashboard') }}" class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400">
-                    Dashboard
+                    {{ __('Dashboard') }}
                 </a>
             @endif
             <a href="{{ route('posts.index') }}" class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400">
-                Articles
+                {{ __('Articles') }}
             </a>
             <a href="{{ route('subscriptions.index') }}" class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400">
-                Abonnements
+                {{ __('Subscriptions') }}
             </a>
+            
+            <!-- Language Switcher Mobile -->
+            <div class="border-t border-gray-200 pt-3 dark:border-gray-700">
+                <p class="px-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ __('Language') }}</p>
+                <div class="mt-2 space-y-1">
+                    <a href="{{ route('language.switch', 'fr') }}" class="flex items-center space-x-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 {{ app()->getLocale() == 'fr' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : '' }}">
+                        <span class="text-xl">🇫🇷</span>
+                        <span>Français</span>
+                    </a>
+                    <a href="{{ route('language.switch', 'en') }}" class="flex items-center space-x-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 {{ app()->getLocale() == 'en' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : '' }}">
+                        <span class="text-xl">🇬🇧</span>
+                        <span>English</span>
+                    </a>
+                    <a href="{{ route('language.switch', 'de') }}" class="flex items-center space-x-3 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 {{ app()->getLocale() == 'de' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : '' }}">
+                        <span class="text-xl">🇩🇪</span>
+                        <span>Deutsch</span>
+                    </a>
+                </div>
+            </div>
         </div>
 
         @auth
