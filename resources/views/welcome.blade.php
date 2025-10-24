@@ -22,93 +22,269 @@
     <body class="bg-gray-100 font-sans antialiased dark:bg-gray-900">
         <div class="min-h-screen">
             <!-- Navigation -->
-            <nav class="bg-white shadow-lg dark:bg-gray-800">
+            <nav class="sticky top-0 z-50 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-lg dark:border-gray-800 dark:bg-gray-900/95">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 justify-between">
-                        <div class="flex items-center">
-                            <a href="/" class="text-2xl font-bold text-gray-800 dark:text-white">
-                                MonBlog
-                            </a>
+                    <div class="flex h-20 items-center justify-between">
+                        <!-- Logo & Brand -->
+                        <div class="flex items-center space-x-3">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 shadow-lg">
+                                <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <a href="/" class="flex flex-col">
+                                    <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">
+                                        TechBlog
+                                    </span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Votre source d'inspiration</span>
+                                </a>
+                            </div>
                         </div>
                         
-                        <div class="flex items-center">
+                        <!-- Navigation Links Desktop -->
+                        <div class="hidden items-center space-x-1 md:flex">
+                            <a href="/" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400">
+                                Accueil
+                            </a>
+                            <a href="{{ route('posts.index') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400">
+                                Articles
+                            </a>
+                            <a href="{{ route('subscriptions.index') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400">
+                                Abonnements
+                            </a>
+                        </div>
+
+                        <!-- Auth Buttons -->
+                        <div class="flex items-center space-x-3">
                             @if (Route::has('login'))
-                                <div class="space-x-4">
-                                    @auth
-                                        <a href="{{ auth()->user()->hasRole('admin') ? url('/dashboard') : url('/') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                        {{ auth()->user()->hasRole('admin') ? 'Dashboard' : 'Accueil' }}
+                                @auth
+                                    @if(auth()->user()->hasRole('admin'))
+                                        <a href="{{ url('/dashboard') }}" class="hidden rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all hover:shadow-xl md:inline-flex">
+                                            Dashboard
                                         </a>
-                                        <a href="{{ route('posts.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                            Articles
+                                    @endif
+                                    <form method="POST" action="{{ route('logout') }}" class="hidden md:inline-block">
+                                        @csrf
+                                        <button type="submit" class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+                                            Déconnexion
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" class="hidden rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 md:inline-flex">
+                                        Connexion
+                                    </a>
+                                    @if (Route::has('register'))
+                                        <a href="{{ route('register') }}" class="hidden rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all hover:shadow-xl md:inline-flex">
+                                            Inscription
                                         </a>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button type="submit" class="text-sm text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                                {{ __('Log Out') }}
-                                            </button>
-                                        </form>
-                                    @else
-                                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                            Connexion
-                                        </a>
-
-                                        <a href="{{ route('posts.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                            Les posts
-                                        </a>
-
-                                        @if (Route::has('register'))
-                                            <a href="{{ route('register') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                                Inscription
-                                            </a>
-                                        @endif
-                                            <a href="{{ route('subscriptions.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                                {{ __('abo') }}
-                                            </a>
-                                    @endauth
-                                </div>
+                                    @endif
+                                @endauth
                             @endif
+                            
+                            <!-- Mobile menu button -->
+                            <button class="rounded-lg p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
             </nav>
 
             <!-- Hero Section -->
-            <div class="relative overflow-hidden bg-white dark:bg-gray-800">
-                <div class="mx-auto max-w-7xl">
-                    <div class="relative z-10 bg-white pb-8 sm:pb-16 md:pb-20 lg:w-full lg:max-w-2xl lg:pb-28 xl:pb-32 dark:bg-gray-800">
-                        <main class="mx-auto mt-10 max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                            <div class="sm:text-center lg:text-left">
-                                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl dark:text-white">
-                                    <span class="block">Bienvenue sur</span>
-                                    <span class="block text-indigo-600 dark:text-indigo-400">Mon Blog Personnel</span>
-                                </h1>
-                                <p class="mt-3 text-base text-gray-500 sm:mx-auto sm:mt-5 sm:max-w-xl sm:text-lg md:mt-5 md:text-xl lg:mx-0 dark:text-gray-400">
-                                    Découvrez mes articles sur le développement web, la technologie et bien plus encore.
-                                </p>
-                                <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                                    <div class="rounded-md shadow">
-                                        <a href="#" class="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:px-10 md:py-4 md:text-lg">
-                                            Commencer la lecture
-                                        </a>
+            <div class="relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+                <!-- Decorative background elements -->
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -left-4 top-0 h-72 w-72 rounded-full bg-purple-300 opacity-20 blur-3xl dark:bg-purple-900"></div>
+                    <div class="absolute -right-4 top-20 h-96 w-96 rounded-full bg-indigo-300 opacity-20 blur-3xl dark:bg-indigo-900"></div>
+                </div>
+
+                <div class="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+                    <div class="grid gap-12 lg:grid-cols-2 lg:gap-8">
+                        <!-- Left Column - Content -->
+                        <div class="flex flex-col justify-center">
+                            <div class="mb-4 inline-flex">
+                                <span class="rounded-full bg-indigo-100 px-4 py-1.5 text-sm font-semibold text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+                                    🚀 Nouveau contenu chaque semaine
+                                </span>
+                            </div>
+                            <h1 class="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl dark:text-white">
+                                Explorez le monde de la
+                                <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">
+                                    technologie
+                                </span>
+                            </h1>
+                            <p class="mt-6 text-xl leading-relaxed text-gray-600 dark:text-gray-300">
+                                Découvrez des articles passionnants sur le développement web, les dernières tendances tech, et des tutoriels pratiques pour améliorer vos compétences.
+                            </p>
+                            <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+                                <a href="{{ route('posts.index') }}" class="group inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
+                                    Découvrir les articles
+                                    <svg class="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </a>
+                                <a href="{{ route('subscriptions.index') }}" class="inline-flex items-center justify-center rounded-xl border-2 border-gray-300 bg-white px-8 py-4 text-base font-semibold text-gray-700 transition-all hover:border-indigo-600 hover:text-indigo-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-indigo-400 dark:hover:text-indigo-400">
+                                    Voir les abonnements
+                                </a>
+                            </div>
+                            
+                            <!-- Stats -->
+                            <div class="mt-12 grid grid-cols-3 gap-6">
+                                <div>
+                                    <p class="text-4xl font-bold text-indigo-600 dark:text-indigo-400">50+</p>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Articles</p>
+                                </div>
+                                <div>
+                                    <p class="text-4xl font-bold text-purple-600 dark:text-purple-400">10K+</p>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Lecteurs</p>
+                                </div>
+                                <div>
+                                    <p class="text-4xl font-bold text-pink-600 dark:text-pink-400">5★</p>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Évaluation</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column - Image/Illustration -->
+                        <div class="relative flex items-center justify-center">
+                            <div class="relative h-full w-full">
+                                <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 opacity-20 blur-2xl"></div>
+                                <div class="relative rounded-3xl bg-gradient-to-br from-indigo-100 to-purple-100 p-8 shadow-2xl dark:from-gray-800 dark:to-gray-700">
+                                    <div class="space-y-4">
+                                        <div class="h-4 w-3/4 rounded-lg bg-indigo-300 dark:bg-indigo-700"></div>
+                                        <div class="h-4 w-1/2 rounded-lg bg-purple-300 dark:bg-purple-700"></div>
+                                        <div class="h-32 rounded-lg bg-gradient-to-br from-indigo-200 to-purple-200 dark:from-indigo-800 dark:to-purple-800"></div>
+                                        <div class="flex space-x-2">
+                                            <div class="h-4 w-1/3 rounded-lg bg-pink-300 dark:bg-pink-700"></div>
+                                            <div class="h-4 w-1/4 rounded-lg bg-indigo-300 dark:bg-indigo-700"></div>
+                                        </div>
+                                        <div class="h-20 rounded-lg bg-gradient-to-br from-purple-200 to-pink-200 dark:from-purple-800 dark:to-pink-800"></div>
                                     </div>
                                 </div>
                             </div>
-                        </main>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="my-6">
-            @include('posts.partials.all-articles', ['posts' => $posts])
+            <!-- Articles Section -->
+            <div class="bg-gray-50 py-16 dark:bg-gray-900">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-12 text-center">
+                        <h2 class="text-4xl font-bold text-gray-900 dark:text-white">
+                            Derniers Articles
+                        </h2>
+                        <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+                            Découvrez nos articles les plus récents et restez à jour avec les dernières tendances
+                        </p>
+                    </div>
+                    @include('posts.partials.all-articles', ['posts' => $posts])
+                </div>
+            </div>
+
+            <!-- Newsletter Section -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-16">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold text-white sm:text-4xl">
+                            Restez informé des nouveautés
+                        </h2>
+                        <p class="mt-4 text-lg text-indigo-100">
+                            Inscrivez-vous à notre newsletter pour recevoir les derniers articles directement dans votre boîte mail
+                        </p>
+                        <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+                            <input type="email" placeholder="Votre adresse email" class="rounded-lg border-0 px-6 py-3 text-gray-900 shadow-lg focus:ring-2 focus:ring-white sm:w-96">
+                            <button class="rounded-lg bg-white px-8 py-3 font-semibold text-indigo-600 shadow-lg transition-all hover:scale-105 hover:bg-gray-50">
+                                S'abonner
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Footer -->
-            <footer class="bg-white dark:bg-gray-800">
-                <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
-                    <div class="mt-8 md:mt-0">
-                        <p class="text-center text-base text-gray-500 dark:text-gray-400">
-                            Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-                        </p>
+            <footer class="bg-gray-900">
+                <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+                    <!-- Top Footer -->
+                    <div class="grid gap-8 lg:grid-cols-4">
+                        <!-- Brand Column -->
+                        <div class="lg:col-span-1">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600">
+                                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xl font-bold text-white">TechBlog</span>
+                            </div>
+                            <p class="mt-4 text-sm text-gray-400">
+                                Votre source d'inspiration pour la technologie et le développement web.
+                            </p>
+                            <!-- Social Links -->
+                            <div class="mt-6 flex space-x-4">
+                                <a href="#" class="text-gray-400 transition-colors hover:text-white">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                    </svg>
+                                </a>
+                                <a href="#" class="text-gray-400 transition-colors hover:text-white">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                                    </svg>
+                                </a>
+                                <a href="#" class="text-gray-400 transition-colors hover:text-white">
+                                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Quick Links -->
+                        <div>
+                            <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Navigation</h3>
+                            <ul class="space-y-3">
+                                <li><a href="/" class="text-gray-400 transition-colors hover:text-white">Accueil</a></li>
+                                <li><a href="{{ route('posts.index') }}" class="text-gray-400 transition-colors hover:text-white">Articles</a></li>
+                                <li><a href="{{ route('subscriptions.index') }}" class="text-gray-400 transition-colors hover:text-white">Abonnements</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Resources -->
+                        <div>
+                            <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Ressources</h3>
+                            <ul class="space-y-3">
+                                <li><a href="#" class="text-gray-400 transition-colors hover:text-white">Documentation</a></li>
+                                <li><a href="#" class="text-gray-400 transition-colors hover:text-white">Tutoriels</a></li>
+                                <li><a href="#" class="text-gray-400 transition-colors hover:text-white">Support</a></li>
+                                <li><a href="#" class="text-gray-400 transition-colors hover:text-white">FAQ</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Legal -->
+                        <div>
+                            <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-white">Légal</h3>
+                            <ul class="space-y-3">
+                                <li><a href="#" class="text-gray-400 transition-colors hover:text-white">Confidentialité</a></li>
+                                <li><a href="#" class="text-gray-400 transition-colors hover:text-white">Conditions</a></li>
+                                <li><a href="#" class="text-gray-400 transition-colors hover:text-white">Cookies</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Footer -->
+                    <div class="mt-12 border-t border-gray-800 pt-8">
+                        <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
+                            <p class="text-sm text-gray-400">
+                                © 2024 TechBlog. Tous droits réservés.
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                Built with Laravel v{{ Illuminate\Foundation\Application::VERSION }} & PHP v{{ PHP_VERSION }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </footer>
